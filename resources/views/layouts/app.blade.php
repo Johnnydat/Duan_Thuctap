@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard')</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist@0.11.4/dist/chartist.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css">
-    
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,7 +38,7 @@
             background-color: white;
             margin: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         #nprogress .bar {
@@ -62,7 +63,7 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-overlay.show {
             opacity: 1;
             visibility: visible;
@@ -72,38 +73,40 @@
             body {
                 padding-left: 0;
             }
-            
+
             .main-content {
                 margin: 15px;
             }
         }
-        
+
         @media (max-width: 767.98px) {
             .main-content {
                 margin: 10px;
                 padding: 15px;
             }
         }
+
+
+
     </style>
     @yield('styles')
 </head>
 
 <body>
-    @include('admin.partials.nav')
+   @include('admin.partials.nav')
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     @include('admin.partials.sidebar')
-    
+
     <div class="wrapper">
         <main class="main-content">
             @yield('content')
         </main>
         @include('admin.partials.footer')
     </div>
-
+    @include('auth.auth_modals')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartist@0.11.4/dist/chartist.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
-
     <script>
         // Initialize NProgress
         NProgress.configure({ showSpinner: false });
@@ -111,13 +114,13 @@
         window.addEventListener('load', () => NProgress.done());
 
         // Sidebar functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.getElementById('adminSidebar');
             const sidebarToggle = document.getElementById('sidebarToggle');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const body = document.body;
 
-            sidebarToggle?.addEventListener('click', function() {
+            sidebarToggle?.addEventListener('click', function () {
                 if (window.innerWidth <= 991.98) {
                     sidebar.classList.toggle('show');
                     sidebarOverlay.classList.toggle('show');
@@ -128,13 +131,13 @@
                 }
             });
 
-            sidebarOverlay?.addEventListener('click', function() {
+            sidebarOverlay?.addEventListener('click', function () {
                 sidebar.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
                 sidebarToggle.classList.remove('active');
             });
 
-            window.addEventListener('resize', function() {
+            window.addEventListener('resize', function () {
                 if (window.innerWidth > 991.98) {
                     sidebar?.classList.remove('show');
                     sidebarOverlay?.classList.remove('show');
@@ -143,5 +146,37 @@
         });
     </script>
     @yield('scripts')
+
+    <!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Hiển thị alert từ session -->
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Thành công!',
+        text: '{{ session('success') }}',
+        width: '400',
+        timer: 1500,
+        showConfirmButton: false,
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        text: '{{ session('error') }}',
+        width: '400',
+        timer: 1500,
+        showConfirmButton: false,
+    });
+</script>
+@endif
+
 </body>
+
 </html>
